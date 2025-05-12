@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcolatore Dimensione Impresa</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+       * {
+    font-family: 'Open Sans', Arial, sans-serif;
+}
+        body {
+            font-family: 'Open Sans', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        button, 
+.btn-3d, 
+.wizard-btn, 
+.delete-btn, 
+.nav-button, 
+.tab-button {
+    font-family: 'Open Sans', Arial, sans-serif;
+}
+h1, h2, h3 {
+    font-weight: 600; /* Semi-bold per i titoli */
+}
+
+.tab-button {
+    font-weight: 500; /* Medium per i tab */
+}
+
+button, .btn-3d, .wizard-btn, .nav-button {
+    font-weight: 500; /* Medium per i pulsanti principali */
+}
+
+/* Aggiustamenti opzionali per migliorare la leggibilità con Open Sans */
+input, select, textarea {
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 15px; /* Leggermente più grande per migliorare la leggibilità nei campi di input */
+}
+
+.help-text {
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 13px; /* Dimensione ottimale per i testi di aiuto con Open Sans */
+}
+        .button-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+        gap: 10px;
+        }
+        .button-container .wizard-btn,
+.button-container .delete-btn {
+    flex: 1; 
+    min-width: 140px;
+    height: 36px;
+    padding: 0 16px; 
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 36px; 
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    margin: 0; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box; 
+    vertical-align: middle; 
+    position: relative; 
+    bottom: 0; 
+}
+.button-container .wizard-btn {
+    background-color: #3498db;
+    color: white;
+}
+
+.button-container .delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.button-container .wizard-btn:hover {
+    background-color: #2980b9;
+}
+
+.button-container .delete-btn:hover {
+    background-color: #c82333;
+}
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-top: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="number"], select, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 30px auto;
+            width: 200px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .result {
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            display: none;
+        }
+        .result h2 {
+            margin-top: 0;
+            font-size: 24px;
+        }
+        .result-details {
+            text-align: left;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+        }
+        .result-details h3 {
+            margin-top: 0;
+        }
+        .result-micro {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .result-small {
+            background-color: #cce5ff;
+            border: 1px solid #b8daff;
+            color: #004085;
+        }
+        .result-medium {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+        }
+        .result-large {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .tab {
+            display: none;
+        }
+        .tab.active {
+            display: block;
+        }
+        .tab-header {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            flex-wrap: wrap;
+        }
+        .tab-button {
+            background-color: #3498db;
+            color: white;
+            border: 1px solid #2980b9;
+            border-bottom: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .tab-button.active {
+            background-color: #2c3e50;
+            color: white;
+            border-color: #2c3e50;
+            font-weight: bold;
+        }
+        .tab-button:hover {
+            background-color: #2980b9;
+        }
+        .help-text {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        .collapsed {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .expanded {
+            max-height: 1000px;
+            transition: max-height 0.6s ease;
+        }
+        .collapsible-header {
+            cursor: pointer;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .collapsible-content {
+            padding: 0 10px;
+            background-color: #f8f9fa;
+            border-radius: 0 0 4px 4px;
+        }
+        .wizard-question {
+            margin-bottom: 30px;
+        }
+        
+        #wizard-question-1 {
+            display: block;
+        }
+        .wizard-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .wizard-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .checkbox-group {
+            margin-bottom: 20px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        
+        .summary-panel {
+            background-color: #f1f8ff;
+            border: 1px solid #cce5ff;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #0366d6;
+        }
+        
+        .summary-item {
+            margin-bottom: 5px;
+            display: flex;
+        }
+        
+        .summary-label {
+            font-weight: bold;
+            width: 200px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .status-complete {
+            background-color: #28a745;
+        }
+        
+        .status-incomplete {
+            background-color: #dc3545;
+        }
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .nav-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: auto;
+            margin: 0;
+        }
+        
+        .nav-button:hover {
+            background-color: #2980b9;
+        }
+        
+        .nav-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+        .btn-3d {
+        position: relative;
+        background: #3498db;
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border: none;
+        padding: 15px 35px;
+        border-radius: 6px;
+        box-shadow: 0 6px 0 #2980b9, 0 8px 10px rgba(0, 0, 0, 0.3);
+        transition: all 0.15s ease;
+        min-width: 280px;
+        cursor: pointer;
+    }
+    
+    .btn-3d:before {
+        content: '';
+        position: absolute;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+        top: 4px;
+        left: 4px;
+        right: 4px;
+        bottom: 4px;
+    }
+    
+    .btn-3d:hover {
+        background: #2980b9;
+        box-shadow: 0 4px 0 #1c638d, 0 6px 8px rgba(0, 0, 0, 0.3);
+        transform: translateY(2px);
+    }
+    
+    .btn-3d:active {
+        background: #2980b9;
+        box-shadow: 0 1px 0 #1c638d, 0 2px 3px rgba(0, 0, 0, 0.3);
+        transform: translateY(5px);
+    }
+    .form-group[style*="justify-content: space-between;"] {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    /* Stile uniforme per i pulsanti nella stessa riga */
+    .form-group[style*="justify-content: space-between;"] button {
+        flex: 0 0 auto;
+        min-width: 120px; /* Larghezza minima coerente */
+    }
+    /* Footer per Release e Copyright */
+.app-footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+}
+
+.footer-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.version-info {
+    display: flex;
+    justify-content: center;
+    gap: 12px; /* Spazio tra gli elementi della versione */
+    flex-wrap: wrap;
+}
+
+.release-label {
+    font-weight: 600;
+}
+
+.release-number {
+    color: #3498db;
+    font-weight: 500;
+}
+
+.release-date {
+    color: #777;
+}
+
+.copyright-info {
+    margin-top: 5px;
+}
+
+/* Responsive - adatta il layout su schermi piccoli */
+@media (max-width: 600px) {
+    .footer-container {
+        gap: 12px;
+    }
+    
+    .version-info {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calcolatore Dimensione Impresa</h1>
+        
+        <div class="tab-header">
+            <button class="tab-button active" onclick="showTab('tab-wizard')">Guidato</button>
+            <button class="tab-button" onclick="showTab('tab-main')">Dati Principali</button>
+            <button class="tab-button" id="tab-associate-btn" onclick="showTab('tab-associate')">Imprese Associate</button>
+            <button class="tab-button" id="tab-collegate-btn" onclick="showTab('tab-collegate')">Imprese Collegate</button>
+            <button class="tab-button" id="tab-pf-btn" onclick="showTab('tab-pf')">Collegamento Persone Fisiche</button>
+            <button class="tab-button" onclick="showTab('tab-riepilogo')">Riepilogo</button>
+            <button class="tab-button" onclick="showTab('tab-info')">Informazioni</button>
+        </div>
+        
+        <div id="tab-wizard" class="tab active">
+            <h2>Determina il tipo di impresa</h2>
+            <p>Rispondi alle seguenti domande per determinare il tipo di impresa:</p>
+            
+            <div id="wizard-question-1" class="wizard-question">
+                <p><strong>Domanda 1:</strong> Seleziona tutte le relazioni che si applicano alla tua impresa:</p>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="relazione-associata" value="associata">
+                        <label for="relazione-associata">Ci sono imprese che possiedono tra il 25% e il 50% della tua impresa o viceversa</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="relazione-collegata" value="collegata">
+                        <label for="relazione-collegata">Ci sono imprese che possiedono più del 50% della tua impresa o viceversa</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="relazione-collegata-pf" value="collegata-pf">
+                        <label for="relazione-collegata-pf">Ci sono persone fisiche che detengono più del 50% sia nella tua impresa che in altre imprese operanti nello stesso mercato</label>
+                    </div>
+                </div>
+                <!--<button class="wizard-btn" onclick="analyzeRelations()">Check</button>-->
+                <div style="display: flex; justify-content: center; margin: 30px 0;">
+                    <button onclick="analyzeRelations()" class="btn-3d" style="min-width: 200px; font-size: 16px; padding: 10px 25px;">
+                        VERIFICA
+                    </button>
+                </div>
+            </div>
+
+            
+            <div id="wizard-result" class="wizard-question" style="display: none;">
+                <h3>Risultato dell'analisi</h3>
+                <p id="wizard-result-text"></p>
+                <div style="display: flex; justify-content: center; margin-top: 15px;">
+                    <button class="wizard-btn" onclick="applyWizardResult()">Conferma e continua</button>
+                </div>
+                <div style="display: flex; justify-content: center; margin-top: 10px;">
+                    <button class="wizard-btn" onclick="resetWizard()">Ricomincia</button>
+                </div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-button" style="visibility: hidden;">Indietro</button>
+                <button class="nav-button" onclick="navigateToNext('tab-wizard')">Avanti</button>
+            </div>
+        </div>
+        <div id="tab-main" class="tab">
+            <div class="form-group">
+                <label for="nome-impresa">Nome dell'impresa principale:</label>
+                <input type="text" id="nome-impresa" placeholder="Inserisci il nome dell'impresa">
+            </div>
+            
+            <div class="form-group">
+                <label>Tipi di relazioni dell'impresa:</label>
+                <div class="checkbox-group" id="tipi-relazioni-container">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="tipo-associata" disabled>
+                        <label for="tipo-associata">Impresa Associata</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="tipo-collegata" disabled>
+                        <label for="tipo-collegata">Impresa Collegata</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="tipo-collegata-pf" disabled>
+                        <label for="tipo-collegata-pf">Impresa Collegata tramite persone fisiche</label>
+                    </div>
+                </div>
+                <div class="help-text">Per modificare i tipi di relazione, torna al percorso guidato</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="effettivi">Numero di effettivi (ULA):</label>
+                <input type="number" id="effettivi" min="0" step="1" placeholder="Inserisci il numero di effettivi">
+                <div class="help-text">Numero di unità lavorative-anno (ULA), compresi dipendenti, proprietari, soci attivi</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="fatturato">Fatturato annuo (Euro):</label>
+                <input type="number" id="fatturato" min="0" step="1000" placeholder="Inserisci il fatturato annuo">
+                <div class="help-text">Fatturato annuo al netto dell'IVA e di altre imposte indirette</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="bilancio">Totale di bilancio annuo (Euro):</label>
+                <input type="number" id="bilancio" min="0" step="1000" placeholder="Inserisci il totale di bilancio">
+                <div class="help-text">Totale dell'attivo patrimoniale dell'impresa</div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-button" onclick="navigateToPrevious('tab-main')">Indietro</button>
+                <button class="nav-button" onclick="navigateToNext('tab-main')">Avanti</button>
+            </div>
+        </div>
+        <div id="tab-associate" class="tab">
+            <h2>Imprese Associate</h2>
+            <p>Inserisci i dati delle imprese associate (che detengono dal 25% al 50% dell'impresa o viceversa)</p>
+            
+            <div id="associate-container">
+                <div class="associate-item" data-confermata="false">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <span>Impresa Associata #1</span>
+                        <span style="margin-left: auto; margin-right: 10px; font-size: 12px; padding: 2px 6px; background-color: #dc3545; color: white; border-radius: 4px;">Non confermata</span>
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content collapsed">
+                        <div class="form-group">
+                            <label>Nome dell'impresa:</label>
+                            <input type="text" class="associate-name" placeholder="Inserisci il nome dell'impresa">
+                        </div>
+                        <div class="form-group">
+                            <label>Percentuale di partecipazione (%):</label>
+                            <input type="number" class="associate-percentage" min="25" max="50" value="25" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Numero di effettivi (ULA):</label>
+                            <input type="number" class="associate-effettivi" min="0" step="1" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Fatturato annuo (Euro):</label>
+                            <input type="number" class="associate-fatturato" min="0" step="1000" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Totale di bilancio annuo (Euro):</label>
+                            <input type="number" class="associate-bilancio" min="0" step="1000" value="0">
+                        </div>
+                        <div class="button-container">
+                            <button class="wizard-btn" onclick="confermaImpresa(this, 'associate')">Conferma dati</button>
+                            <button class="delete-btn" onclick="eliminaImpresa(this, 'associate')">Elimina questa impresa</button>
+                        </div>
+                        <div class="message-box" style="margin-top: 10px;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="aggiungiAssociata()">Aggiungi Impresa Associata</button>
+            
+            <div class="navigation-buttons">
+                <button class="nav-button" onclick="navigateToPrevious('tab-associate')">Indietro</button>
+                <button class="nav-button" onclick="navigateToNext('tab-associate')">Avanti</button>
+            </div>
+        </div>
+        <div id="tab-collegate" class="tab">
+            <h2>Imprese Collegate</h2>
+            <p>Inserisci i dati delle imprese collegate (che controllano o sono controllate dall'impresa)</p>
+            
+            <div id="collegate-container">
+                <div class="collegata-item" data-confermata="false">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <span>Impresa Collegata #1</span>
+                        <span style="margin-left: auto; margin-right: 10px; font-size: 12px; padding: 2px 6px; background-color: #dc3545; color: white; border-radius: 4px;">Non confermata</span>
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content collapsed">
+                        <div class="form-group">
+                            <label>Nome dell'impresa:</label>
+                            <input type="text" class="collegata-name" placeholder="Inserisci il nome dell'impresa">
+                        </div>
+                        <div class="form-group">
+                            <label>Numero di effettivi (ULA):</label>
+                            <input type="number" class="collegata-effettivi" min="0" step="1" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Fatturato annuo (Euro):</label>
+                            <input type="number" class="collegata-fatturato" min="0" step="1000" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Totale di bilancio annuo (Euro):</label>
+                            <input type="number" class="collegata-bilancio" min="0" step="1000" value="0">
+                        </div>
+                        <div class="button-container">
+                            <button class="wizard-btn" onclick="confermaImpresa(this, 'collegata')">Conferma dati</button>
+                            <button class="delete-btn" onclick="eliminaImpresa(this, 'collegata')">Elimina questa impresa</button>
+                        </div>
+                        <div class="message-box" style="margin-top: 10px;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="aggiungiCollegata()">Aggiungi Impresa Collegata</button>
+            
+            <div class="navigation-buttons">
+                <button class="nav-button" onclick="navigateToPrevious('tab-collegate')">Indietro</button>
+                <button class="nav-button" onclick="navigateToNext('tab-collegate')">Avanti</button>
+            </div>
+        </div>
+        <div id="tab-pf" class="tab">
+            <h2>Collegamento tramite Persone Fisiche</h2>
+            <p>Inserisci i dati delle imprese collegate tramite persone fisiche. Secondo la normativa, due imprese sono collegate tramite persone fisiche quando:</p>
+            <ul>
+                <li>Le stesse persone fisiche o gruppo di persone fisiche possiedono congiuntamente almeno il 50% di entrambe le imprese</li>
+                <li>E le imprese operano nello stesso mercato o su mercati contigui (stessa divisione ATECO) o una fattura all'altra almeno il 25% del proprio fatturato</li>
+            </ul>
+            
+            <div class="form-group">
+                <label for="pf-ateco">Codice ATECO della tua impresa (prime due cifre):</label>
+                <input type="text" id="pf-ateco" placeholder="Es. 28.10">
+                <div class="help-text">Inserisci le prime due cifre del codice ATECO della tua impresa</div>
+            </div>
+            
+            <div id="pf-container">
+                <div class="pf-item">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <span>Impresa collegata tramite persone fisiche #1</span>
+                        <span style="margin-left: auto; margin-right: 10px; font-size: 12px; padding: 2px 6px; background-color: #dc3545; color: white; border-radius: 4px; display: none;">Stato</span>
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content collapsed">
+                        <div class="form-group">
+                            <label>Nome dell'impresa:</label>
+                            <input type="text" class="pf-name" placeholder="Inserisci il nome dell'impresa">
+                        </div>
+                        <div class="form-group">
+                            <label>Codice ATECO (prime due cifre):</label>
+                            <input type="text" class="pf-ateco" placeholder="Es. 28.07">
+                        </div>
+                        <div class="form-group">
+                            <label>Percentuale controllata dalle stesse persone fisiche (%):</label>
+                            <input type="number" class="pf-percentage" min="51" max="100" value="51" step="1">
+                            <div class="help-text">Percentuale di partecipazione detenuta congiuntamente dalle stesse persone fisiche in entrambe le imprese</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Fatturazione reciproca (% del fatturato):</label>
+                            <input type="number" class="pf-fatturazione" min="0" max="100" value="0" step="1">
+                            <div class="help-text">Percentuale del fatturato totale che questa impresa fattura alla tua o viceversa</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Numero di effettivi (ULA):</label>
+                            <input type="number" class="pf-effettivi" min="0" step="1" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Fatturato annuo (Euro):</label>
+                            <input type="number" class="pf-fatturato" min="0" step="1000" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Totale di bilancio annuo (Euro):</label>
+                            <input type="number" class="pf-bilancio" min="0" step="1000" value="0">
+                        </div>
+                        <div class="form-group">
+                            <button class="wizard-btn" onclick="verificaCollegamentoPF(this)">Verifica collegamento</button>
+                            <div class="pf-result"></div>
+                        </div>
+                        <div class="button-container">
+                            <button class="wizard-btn" id="conferma-pf-btn" onclick="confermaImpresaPF(this)" style="display: none;">Conferma dati</button>
+                            <button class="delete-btn" onclick="eliminaImpresa(this, 'pf')">Elimina questa impresa</button>
+                        </div>
+                        <div class="message-box-pf" style="margin-top: 10px;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="aggiungiImpresaPF()">Aggiungi Impresa</button>
+            
+            <div class="navigation-buttons">
+                <button class="nav-button" onclick="navigateToPrevious('tab-pf')">Indietro</button>
+                <button class="nav-button" onclick="navigateToNext('tab-pf')">Avanti</button>
+            </div>
+        </div>
+        <div id="tab-riepilogo" class="tab">
+            <h2>Riepilogo e Calcolo</h2>
+            
+            <div class="summary-panel">
+                <div class="summary-title">Stato inserimento dati</div>
+                <div class="summary-item">
+                    <div class="summary-label"><span id="status-main-icon" class="status-indicator status-incomplete"></span> Dati Principali:</div>
+                    <div id="status-main">Non compilato</div>
+                </div>
+                <div id="summary-associate-container" style="display: none;">
+                    <div class="summary-item">
+                        <div class="summary-label"><span id="status-associate-icon" class="status-indicator status-incomplete"></span> Imprese Associate:</div>
+                        <div id="status-associate">Non compilato</div>
+                    </div>
+                </div>
+                <div id="summary-collegate-container" style="display: none;">
+                    <div class="summary-item">
+                        <div class="summary-label"><span id="status-collegate-icon" class="status-indicator status-incomplete"></span> Imprese Collegate:</div>
+                        <div id="status-collegate">Non compilato</div>
+                    </div>
+                </div>
+                <div id="summary-pf-container" style="display: none;">
+                    <div class="summary-item">
+                        <div class="summary-label"><span id="status-pf-icon" class="status-indicator status-incomplete"></span> Imprese Collegate tramite P.F.:</div>
+                        <div id="status-pf">Non compilato</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="btn-calcola" onclick="calcolaDimensione()" disabled>Calcola Dimensione</button>
+            <button onclick="resetApplication()">Reset Completo</button>
+            
+            <div id="result" class="result">
+                <h2>Risultato</h2>
+                <p id="result-text">In attesa del calcolo...</p>
+                
+                <div class="result-details">
+                    <h3>Dettagli del calcolo</h3>
+                    <p id="result-details-text"></p>
+                </div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-button" onclick="navigateToPrevious('tab-riepilogo')">Indietro</button>
+                <button class="nav-button" style="visibility: hidden;">Avanti</button>
+            </div>
+        </div>
+        
+        <div id="tab-info" class="tab">
+            <h2>Informazioni sulla Classificazione delle Imprese</h2>
+            
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span>Definizione delle categorie di imprese</span>
+                <span>+</span>
+            </div>
+            <div class="collapsible-content collapsed">
+                <h3>Microimpresa</h3>
+                <ul>
+                    <li>Meno di 10 persone occupate (ULA)</li>
+                    <li>Fatturato annuo o totale di bilancio annuo non superiore a 2 milioni di EUR</li>
+                </ul>
+                
+                <h3>Piccola Impresa</h3>
+                <ul>
+                    <li>Meno di 50 persone occupate (ULA)</li>
+                    <li>Fatturato annuo o totale di bilancio annuo non superiore a 10 milioni di EUR</li>
+                </ul>
+                
+                <h3>Media Impresa</h3>
+                <ul>
+                    <li>Meno di 250 persone occupate (ULA)</li>
+                    <li>Fatturato annuo non superiore a 50 milioni di EUR o totale di bilancio annuo non superiore a 43 milioni di EUR</li>
+                </ul>
+                
+                <h3>Grande Impresa</h3>
+                <ul>
+                    <li>Più di 250 persone occupate (ULA)</li>
+                    <li>Fatturato annuo superiore a 50 milioni di EUR e totale di bilancio annuo superiore a 43 milioni di EUR</li>
+                </ul>
+            </div>
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span>Tipi di imprese</span>
+                <span>+</span>
+            </div>
+            <div class="collapsible-content collapsed">
+                <h3>Impresa Autonoma</h3>
+                <p>Un'impresa è considerata autonoma se:</p>
+                <ul>
+                    <li>È totalmente indipendente, cioè non ha partecipazioni in altre imprese</li>
+                    <li>Non vi sono altre imprese che possiedono partecipazioni pari o superiori al 25% del suo capitale o dei suoi diritti di voto</li>
+                </ul>
+                
+                <h3>Impresa Associata</h3>
+                <p>Si definiscono imprese associate quelle tra le quali esiste la seguente relazione:</p>
+                <ul>
+                    <li>Un'impresa detiene, da sola o insieme ad altre imprese collegate, almeno il 25% e non più del 50% del capitale o dei diritti di voto di un'altra impresa</li>
+                </ul>
+                
+                <h3>Impresa Collegata</h3>
+                <p>Si definiscono imprese collegate quelle tra le quali esiste una delle seguenti relazioni:</p>
+                <ul>
+                    <li>Un'impresa detiene la maggioranza dei diritti di voto di un'altra impresa</li>
+                    <li>Un'impresa ha il diritto di nominare o revocare la maggioranza dei membri del consiglio di amministrazione di un'altra impresa</li>
+                    <li>Un'impresa ha il diritto di esercitare un'influenza dominante su un'altra impresa in virtù di un contratto o di una clausola statutaria</li>
+                    <li>Un'impresa azionista o socia di un'altra impresa controlla da sola la maggioranza dei diritti di voto degli azionisti o soci di quest'ultima</li>
+                </ul>
+                
+                <h3>Impresa Collegata tramite persone fisiche</h3>
+                <p>Due imprese si considerano collegate tramite persone fisiche quando:</p>
+                <ul>
+                    <li>Le stesse persone fisiche o gruppo di persone fisiche detengono congiuntamente più del 50% di entrambe le imprese</li>
+                    <li>E le imprese operano sullo stesso mercato o su mercati contigui (stessa divisione ATECO), oppure una impresa fattura all'altra almeno il 25% del proprio fatturato</li>
+                </ul>
+            </div>
+            
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span>Calcolo degli effettivi e degli importi finanziari</span>
+                <span>+</span>
+            </div>
+            <div class="collapsible-content collapsed">
+                <h3>Effettivi (ULA)</h3>
+                <p>Gli effettivi corrispondono al numero di unità di lavoro-anno (ULA), ossia al numero di persone che hanno lavorato nell'impresa o per conto dell'impresa a tempo pieno durante l'anno considerato.</p>
+                <p>Gli effettivi sono composti da:</p>
+                <ul>
+                    <li>Dipendenti dell'impresa</li>
+                    <li>Persone che lavorano per l'impresa, ne sono dipendenti e sono considerati come gli altri dipendenti dell'impresa</li>
+                    <li>Proprietari gestori</li>
+                    <li>Soci che svolgono un'attività regolare nell'impresa e beneficiano di vantaggi finanziari da essa forniti</li>
+                </ul>
+                <p>Non sono contabilizzati:</p>
+                <ul>
+                    <li>Apprendisti con contratto di apprendistato</li>
+                    <li>Studenti con contratto di formazione</li>
+                    <li>Dipendenti in congedo di maternità o parentale</li>
+                </ul>
+                
+                <h3>Calcolo per le diverse tipologie di imprese</h3>
+                <p><strong>Impresa autonoma:</strong> si considerano solo i dati dell'impresa stessa</p>
+                <p><strong>Impresa associata:</strong> ai dati dell'impresa si aggiungono i dati delle imprese associate in proporzione alla percentuale di partecipazione</p>
+                <p><strong>Impresa collegata:</strong> ai dati dell'impresa si aggiunge il 100% dei dati delle imprese collegate</p>
+                <p><strong>Impresa collegata tramite persone fisiche:</strong> ai dati dell'impresa si aggiunge il 100% dei dati delle imprese collegate tramite persone fisiche</p>
+            </div>
+            
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span>Collegamento tramite persone fisiche</span>
+                <span>+</span>
+            </div>
+            <div class="collapsible-content collapsed">
+                <h3>Collegamento tramite persone fisiche</h3>
+                <p>Secondo l'articolo 3, paragrafo 3 della Raccomandazione UE 2003/361/CE e il Decreto del Ministero delle Attività Produttive del 18 Aprile 2005, due imprese si considerano collegate tramite persone fisiche quando si verificano <strong>entrambe</strong> le seguenti condizioni:</p>
+                <ol>
+                    <li><strong>Controllo tramite persone fisiche:</strong> Le stesse persone fisiche o un gruppo di persone fisiche che agiscono di concerto detengono in entrambe le imprese, congiuntamente, partecipazioni tali da detenerne il controllo (superiore al 50%).</li>
+                    <li><strong>Mercato di riferimento:</strong>
+                        <ul>
+                            <li>Le imprese operano nello stesso mercato o su mercati contigui, ovvero hanno la stessa divisione ATECO (prime due cifre del codice);</li>
+                            <li>OPPURE un'impresa fattura all'altra almeno il 25% del totale del proprio fatturato annuo.</li>
+                        </ul>
+                    </li>
+                </ol>
+                <p>Quando due imprese sono collegate tramite persone fisiche, ai fini del calcolo della dimensione aziendale, i loro dati (effettivi, fatturato, bilancio) devono essere sommati al 100%, esattamente come nel caso delle imprese collegate direttamente.</p>
+                <p><strong>Esempio:</strong> Se la persona fisica A detiene il 60% dell'impresa X e il 70% dell'impresa Y, e le due imprese hanno lo stesso codice ATECO (es. 28.xx), allora X e Y sono imprese collegate tramite persone fisiche.</p>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-button" onclick="navigateToPrevious('tab-info')">Indietro</button>
+                <button class="nav-button" style="visibility: hidden;">Avanti</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Ordine delle tab per la navigazione
+        const tabOrder = ['tab-wizard', 'tab-main', 'tab-associate', 'tab-collegate', 'tab-pf', 'tab-riepilogo', 'tab-info'];
+        
+        // Funzione per navigare alla tab successiva
+        function navigateToNext(currentTabId) {
+            const currentIndex = tabOrder.indexOf(currentTabId);
+            if (currentIndex < tabOrder.length - 1) {
+                let nextTabId = tabOrder[currentIndex + 1];
+                
+                // Salta le tab non applicabili
+                while (nextTabId && !isTabApplicable(nextTabId) && nextTabId !== 'tab-riepilogo' && nextTabId !== 'tab-info') {
+                    const nextIndex = tabOrder.indexOf(nextTabId) + 1;
+                    if (nextIndex < tabOrder.length) {
+                        nextTabId = tabOrder[nextIndex];
+                    } else {
+                        break;
+                    }
+                }
+                
+                if (nextTabId) {
+                    showTab(nextTabId);
+                }
+            }
+        }
+        
+        // Funzione per navigare alla tab precedente
+        function navigateToPrevious(currentTabId) {
+            const currentIndex = tabOrder.indexOf(currentTabId);
+            if (currentIndex > 0) {
+                let prevTabId = tabOrder[currentIndex - 1];
+                
+                // Salta le tab non applicabili
+                while (prevTabId && !isTabApplicable(prevTabId) && prevTabId !== 'tab-wizard' && prevTabId !== 'tab-main') {
+                    const prevIndex = tabOrder.indexOf(prevTabId) - 1;
+                    if (prevIndex >= 0) {
+                        prevTabId = tabOrder[prevIndex];
+                    } else {
+                        break;
+                    }
+                }
+                
+                if (prevTabId) {
+                    showTab(prevTabId);
+                }
+            }
+        }
+        
+        // Funzione per verificare se una tab è applicabile
+        function isTabApplicable(tabId) {
+            if (tabId === 'tab-associate') {
+                return document.getElementById('tipo-associata').checked;
+            } else if (tabId === 'tab-collegate') {
+                return document.getElementById('tipo-collegata').checked;
+            } else if (tabId === 'tab-pf') {
+                return document.getElementById('tipo-collegata-pf').checked;
+            }
+            return true;
+        }
+        
+        // Funzione per eliminare un'impresa
+        function eliminaImpresa(button, tipo) {
+            const item = button.closest(`.${tipo}-item`);
+            if (item) {
+                if (confirm('Sei sicuro di voler eliminare questa impresa?')) {
+                    item.remove();
+                    updateSummary();
+                }
+            }
+        }
+        
+        // Funzione per mostrare la tab selezionata
+        function showTab(tabId) {
+            // Nascondi tutte le tab
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active'); // Nasconde tutte le tab
+            });
+
+            // Disattiva tutti i pulsanti della tab
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.classList.remove('active'); // Disattiva tutti i pulsanti
+            });
+
+            // Mostra la tab selezionata
+            const selectedTab = document.getElementById(tabId);
+            if (selectedTab) {
+                selectedTab.classList.add('active'); // Mostra la tab
+            }
+
+            // Attiva il pulsante corrispondente
+            const currentButton = document.querySelector(`.tab-button[onclick="showTab('${tabId}')"]`);
+            if (currentButton) {
+                currentButton.classList.add('active'); // Evidenzia il pulsante
+            }
+        }
+        
+        // Funzione per gestire i contenuti collassabili
+        function toggleCollapsible(element) {
+            const content = element.nextElementSibling;
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                content.classList.add('expanded');
+                element.querySelector('span:last-child').textContent = '-';
+            } else {
+                content.classList.remove('expanded');
+                content.classList.add('collapsed');
+                element.querySelector('span:last-child').textContent = '+';
+            }
+        }
+        // Funzione per aggiungere un'impresa associata
+        let associateCounter = 1;
+        function aggiungiAssociata() {
+            associateCounter++;
+            const container = document.getElementById('associate-container');
+            const newItem = document.createElement('div');
+            newItem.className = 'associate-item';
+            newItem.setAttribute('data-confermata', 'false'); // Stato iniziale: non confermata
+            newItem.innerHTML = `
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <span>Impresa Associata #${associateCounter}</span>
+                    <span style="margin-left: auto; margin-right: 10px; font-size: 12px; padding: 2px 6px; background-color: #dc3545; color: white; border-radius: 4px;">Non confermata</span>
+                    <span>+</span>
+                </div>
+                <div class="collapsible-content collapsed">
+                    <div class="form-group">
+                        <label>Nome dell'impresa:</label>
+                        <input type="text" class="associate-name" placeholder="Inserisci il nome dell'impresa">
+                    </div>
+                    <div class="form-group">
+                        <label>Percentuale di partecipazione (%):</label>
+                        <input type="number" class="associate-percentage" min="25" max="50" value="25" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Numero di effettivi (ULA):</label>
+                        <input type="number" class="associate-effettivi" min="0" step="1" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Fatturato annuo (Euro):</label>
+                        <input type="number" class="associate-fatturato" min="0" step="1000" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Totale di bilancio annuo (Euro):</label>
+                        <input type="number" class="associate-bilancio" min="0" step="1000" value="0">
+                    </div>
+                    <div class="button-container">
+                        <button class="wizard-btn" onclick="confermaImpresa(this, 'associate')">Conferma dati</button>
+                        <button class="delete-btn" onclick="eliminaImpresa(this, 'associate')">Elimina questa impresa</button>
+                    </div>
+                    <div class="message-box" style="margin-top: 10px;"></div>
+                </div>
+            `;
+            container.appendChild(newItem);
+            updateSummary();
+        }
+        
+        // Funzione per aggiungere un'impresa collegata
+        let collegateCounter = 1;
+        function aggiungiCollegata() {
+            collegateCounter++;
+            const container = document.getElementById('collegate-container');
+            const newItem = document.createElement('div');
+            newItem.className = 'collegata-item';
+            newItem.setAttribute('data-confermata', 'false'); // Stato iniziale: non confermata
+            newItem.innerHTML = `
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <span>Impresa Collegata #${collegateCounter}</span>
+                    <span style="margin-left: auto; margin-right: 10px; font-size: 12px; padding: 2px 6px; background-color: #dc3545; color: white; border-radius: 4px;">Non confermata</span>
+                    <span>+</span>
+                </div>
+                <div class="collapsible-content collapsed">
+                    <div class="form-group">
+                        <label>Nome dell'impresa:</label>
+                        <input type="text" class="collegata-name" placeholder="Inserisci il nome dell'impresa">
+                    </div>
+                    <div class="form-group">
+                        <label>Numero di effettivi (ULA):</label>
+                        <input type="number" class="collegata-effettivi" min="0" step="1" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Fatturato annuo (Euro):</label>
+                        <input type="number" class="collegata-fatturato" min="0" step="1000" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Totale di bilancio annuo (Euro):</label>
+                        <input type="number" class="collegata-bilancio" min="0" step="1000" value="0">
+                    </div>
+                    <div class="button-container">
+                        <button class="wizard-btn" onclick="confermaImpresa(this, 'collegata')">Conferma dati</button>
+                        <button class="delete-btn" onclick="eliminaImpresa(this, 'collegata')">Elimina questa impresa</button>
+                    </div>
+                    <div class="message-box" style="margin-top: 10px;"></div>
+                </div>
+            `;
+            container.appendChild(newItem);
+            updateSummary();
+        }
+        
+        // Funzione per confermare i dati di un'impresa
+        function confermaImpresa(button, tipo) {
+            const item = button.closest(`.${tipo}-item`);
+            const messageBox = item.querySelector('.message-box');
+            const headerStatus = item.querySelector('.collapsible-header span:nth-child(2)');
+            
+            // Leggi i campi necessari
+            const nome = item.querySelector(`.${tipo}-name`).value.trim();
+            const effettivi = parseFloat(item.querySelector(`.${tipo}-effettivi`).value) || 0;
+            
+            // Verifica che i dati essenziali siano inseriti
+            if (nome === '') {
+                messageBox.innerHTML = '<div style="color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 4px;">È necessario inserire il nome dell\'impresa.</div>';
+                return;
+            }
+            
+            if (effettivi <= 0) {
+                messageBox.innerHTML = '<div style="color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 4px;">È necessario inserire un numero valido di effettivi (ULA).</div>';
+                return;
+            }
+            
+            // Se tutti i controlli sono passati, conferma l'impresa
+            item.setAttribute('data-confermata', 'true');
+            
+            // Aggiorna lo stato visivo
+            headerStatus.style.backgroundColor = '#28a745';
+            headerStatus.textContent = 'Confermata';
+            
+            // Disabilita i campi per prevenire modifiche accidentali
+            item.querySelectorAll('input').forEach(input => {
+                input.setAttribute('readonly', 'true');
+                input.style.backgroundColor = '#e9ecef';
+            });
+            
+            // Modifica il pulsante per consentire la modifica
+            button.textContent = 'Modifica dati';
+            button.onclick = function() { sbloccaModifica(this, tipo); };
+            
+            // Messaggio di conferma
+            messageBox.innerHTML = '<div style="color: #155724; background-color: #d4edda; padding: 10px; border-radius: 4px;">Dati confermati con successo!</div>';
+            
+            // Aggiorna il riepilogo
+            updateSummary();
+        }
+        
+        // Funzione per sbloccare la modifica
+        function sbloccaModifica(button, tipo) {
+            const item = button.closest(`.${tipo}-item`);
+            const messageBox = item.querySelector('.message-box');
+            const headerStatus = item.querySelector('.collapsible-header span:nth-child(2)');
+            
+            // Cambia lo stato
+            item.setAttribute('data-confermata', 'false');
+            
+            // Aggiorna lo stato visivo
+            headerStatus.style.backgroundColor = '#dc3545';
+            headerStatus.textContent = 'Non confermata';
+            
+            // Riabilita i campi
+            item.querySelectorAll('input').forEach(input => {
+                input.removeAttribute('readonly');
+                input.style.backgroundColor = '';
+            });
+            
+            // Ripristina il pulsante di conferma
+            button.textContent = 'Conferma dati';
+            button.onclick = function() { confermaImpresa(this, tipo); };
+            
+            // Messaggio
+            messageBox.innerHTML = '<div style="color: #856404; background-color: #fff3cd; padding: 10px; border-radius: 4px;">Modifica dati abilitata. Ricordati di confermare dopo le modifiche.</div>';
+            
+            // Aggiorna il riepilogo
+            updateSummary();
+        }
+        // Funzioni per il wizard
+        function analyzeRelations() {
+            const hasAssociate = document.getElementById('relazione-associata').checked;
+            const hasCollegata = document.getElementById('relazione-collegata').checked;
+            const hasCollegataPF = document.getElementById('relazione-collegata-pf').checked;
+            
+            let message = 'In base alle tue risposte, la tua impresa ha le seguenti relazioni:<br><br>';
+            
+            if (!hasAssociate && !hasCollegata && !hasCollegataPF) {
+                message = 'In base alle tue risposte, la tua impresa è classificata come <strong>AUTONOMA</strong>.<br><br>';
+                message += 'Un\'impresa autonoma non ha partecipazioni significative (≥ 25%) in altre imprese e non è partecipata in modo significativo da altre imprese.';
+            } else {
+                let relations = [];
+                
+                if (hasAssociate) {
+                    relations.push('<strong>IMPRESA ASSOCIATA</strong>: Ha relazioni di partecipazione (tra 25% e 50%) con altre imprese');
+                }
+                
+                if (hasCollegata) {
+                    relations.push('<strong>IMPRESA COLLEGATA</strong>: Ha relazioni di controllo (> 50%) con altre imprese');
+                }
+                
+                if (hasCollegataPF) {
+                    relations.push('<strong>IMPRESA COLLEGATA TRAMITE PERSONE FISICHE</strong>: Ha collegamenti tramite persone fisiche che detengono il controllo di imprese operanti nello stesso mercato');
+                }
+                
+                message += relations.join('<br><br>');
+                message += '<br><br>Per il calcolo della dimensione aziendale, dovrai inserire i dati di tutte queste imprese nelle rispettive sezioni.';
+            }
+            
+            document.getElementById('wizard-result-text').innerHTML = message;
+            document.getElementById('wizard-result').style.display = 'block';
+        }
+        
+        function applyWizardResult() {
+            // Applica il risultato al form principale (solo checkbox, non consentire modifiche dirette)
+            document.getElementById('tipo-associata').checked = document.getElementById('relazione-associata').checked;
+            document.getElementById('tipo-collegata').checked = document.getElementById('relazione-collegata').checked;
+            document.getElementById('tipo-collegata-pf').checked = document.getElementById('relazione-collegata-pf').checked;
+            
+            // Mostra/nascondi le tab appropriate
+            toggleTabs();
+            
+            // Passa alla scheda dei dati principali
+            showTab('tab-main');
+        }
+        
+        function resetWizard() {
+            // Deseleziona tutte le checkbox
+            document.getElementById('relazione-associata').checked = false;
+            document.getElementById('relazione-collegata').checked = false;
+            document.getElementById('relazione-collegata-pf').checked = false;
+            
+            // Nascondi il risultato
+            document.getElementById('wizard-result').style.display = 'none';
+        }
+        
+        // Funzione per aggiungere un'impresa collegata tramite persone fisiche
+        let pfCounter = 1;
+        function aggiungiImpresaPF() {
+            pfCounter++;
+            const container = document.getElementById('pf-container');
+            const newItem = document.createElement('div');
+            newItem.className = 'pf-item';
+            newItem.innerHTML = `
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <span>Impresa collegata tramite persone fisiche #${pfCounter}</span>
+                    <span style="margin-left: auto; margin-right: 10px; font-size: 12px; padding: 2px 6px; background-color: #dc3545; color: white; border-radius: 4px; display: none;">Stato</span>
+                    <span>+</span>
+                </div>
+                <div class="collapsible-content collapsed">
+                    <div class="form-group">
+                        <label>Nome dell'impresa:</label>
+                        <input type="text" class="pf-name" placeholder="Inserisci il nome dell'impresa">
+                    </div>
+                    <div class="form-group">
+                        <label>Codice ATECO (prime due cifre):</label>
+                        <input type="text" class="pf-ateco" placeholder="Es. 28.07">
+                    </div>
+                    <div class="form-group">
+                        <label>Percentuale controllata dalle stesse persone fisiche (%):</label>
+                        <input type="number" class="pf-percentage" min="50" max="100" value="50" step="1">
+                        <div class="help-text">Percentuale di partecipazione detenuta congiuntamente dalle stesse persone fisiche in entrambe le imprese</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Fatturazione reciproca (% del fatturato):</label>
+                        <input type="number" class="pf-fatturazione" min="0" max="100" value="0" step="1">
+                        <div class="help-text">Percentuale del fatturato totale che questa impresa fattura alla tua o viceversa</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Numero di effettivi (ULA):</label>
+                        <input type="number" class="pf-effettivi" min="0" step="1" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Fatturato annuo (Euro):</label>
+                        <input type="number" class="pf-fatturato" min="0" step="1000" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Totale di bilancio annuo (Euro):</label>
+                        <input type="number" class="pf-bilancio" min="0" step="1000" value="0">
+                    </div>
+                    <div class="form-group">
+                        <button class="wizard-btn" onclick="verificaCollegamentoPF(this)">Verifica collegamento</button>
+                        <div class="pf-result"></div>
+                    </div>
+                    <div class="button-container">
+                        <button class="wizard-btn" id="conferma-pf-btn" onclick="confermaImpresaPF(this)" style="display: none;">Conferma dati</button>
+                        <button class="delete-btn" onclick="eliminaImpresa(this, 'pf')">Elimina questa impresa</button>
+                    </div>
+                    <div class="message-box-pf" style="margin-top: 10px;"></div>
+                </div>
+            `;
+            container.appendChild(newItem);
+            updateSummary();
+        }
+        // Funzione per verificare se esiste collegamento tramite persone fisiche
+        function verificaCollegamentoPF(button) {
+            const item = button.closest('.pf-item');
+            const resultDiv = item.querySelector('.pf-result');
+            const confermaBtn = item.querySelector('#conferma-pf-btn') || item.querySelector('.wizard-btn[onclick^="confermaImpresaPF"]');
+            const statusBadge = item.querySelector('.collapsible-header span:nth-child(2)');
+            
+            // Leggi i dati
+            const atecoImpresa = document.getElementById('pf-ateco').value.trim().substring(0, 2);
+            const atecoAltra = item.querySelector('.pf-ateco').value.trim().substring(0, 2);
+            const percentuale = parseFloat(item.querySelector('.pf-percentage').value) || 0;
+            const fatturazione = parseFloat(item.querySelector('.pf-fatturazione').value) || 0;
+            
+            // Verifica che il codice ATECO sia inserito
+            if (atecoImpresa === '') {
+                resultDiv.innerHTML = `<div style="color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 4px; margin-top: 10px;">
+                    <strong>ERRORE:</strong> Inserire il codice ATECO dell'impresa principale nella sezione precedente.
+                </div>`;
+                return;
+            }
+            
+            if (atecoAltra === '') {
+                resultDiv.innerHTML = `<div style="color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 4px; margin-top: 10px;">
+                    <strong>ERRORE:</strong> Inserire il codice ATECO dell'impresa.
+                </div>`;
+                return;
+            }
+            
+            // Verifica le condizioni per il collegamento
+            let isCollegata = false;
+            let motivo = "";
+            
+            if (percentuale <= 50) {
+                motivo = "La percentuale di controllo è inferiore al 50%. Non si tratta di imprese collegate tramite persone fisiche.";
+            } else if (atecoImpresa === atecoAltra) {
+                isCollegata = true;
+                motivo = "Le due imprese operano nella stessa divisione ATECO (" + atecoImpresa + "). Sono considerate imprese collegate tramite persone fisiche.";
+            } else if (fatturazione >= 25) {
+                isCollegata = true;
+                motivo = "Un'impresa fattura all'altra almeno il 25% del proprio fatturato. Sono considerate imprese collegate tramite persone fisiche.";
+            } else {
+                motivo = "Le imprese non operano nella stessa divisione ATECO e non c'è una fatturazione reciproca significativa. Non sono collegate tramite persone fisiche.";
+            }
+            
+            // Reset dell'elemento
+            item.removeAttribute('data-confermata');
+            item.removeAttribute('data-collegata');
+            
+            // Visualizza il risultato
+            if (isCollegata) {
+                resultDiv.innerHTML = `<div style="color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 4px; margin-top: 10px;"><strong>IMPRESE COLLEGATE.</strong> ${motivo}</div>`;
+                
+                // Abilita i campi per i dati
+                item.querySelectorAll('.pf-effettivi, .pf-fatturato, .pf-bilancio').forEach(input => {
+                    input.disabled = false;
+                });
+                
+                // Aggiungi attributo per identificare il collegamento
+                item.setAttribute('data-collegata', 'true');
+                
+                // Mostra il pulsante di conferma
+                if (confermaBtn) {
+                    confermaBtn.style.display = 'block';
+                }
+                
+                // Mostra il badge di stato
+                statusBadge.style.display = 'inline-block';
+                statusBadge.textContent = 'Non confermata';
+                statusBadge.style.backgroundColor = '#dc3545';
+            } else {
+                resultDiv.innerHTML = `<div style="color: #155724; background-color: #d4edda; padding: 10px; border-radius: 4px; margin-top: 10px;">
+                    <strong>IMPRESE NON COLLEGATE.</strong> ${motivo}
+                    <button class="delete-btn" style="margin-left: 10px;" onclick="rimuoviCollegamentoPF(this)">Rimuovi questa impresa</button>
+                </div>`;
+                
+                // Disabilita i campi per i dati
+                item.querySelectorAll('.pf-effettivi, .pf-fatturato, .pf-bilancio').forEach(input => {
+                    input.disabled = true;
+                    input.value = "0";
+                });
+                
+                // Aggiungi attributo per identificare che non è collegata
+                item.setAttribute('data-collegata', 'false');
+                item.setAttribute('data-confermata', 'true'); // Consideriamo come già confermate le non collegate
+                
+                // Nascondi il pulsante di conferma
+                if (confermaBtn) {
+                    confermaBtn.style.display = 'none';
+                }
+                
+                // Nascondi lo stato
+                statusBadge.style.display = 'none';
+            }
+            
+            // Aggiorna il riepilogo
+            updateSummary();
+        }
+
+        // Funzione per confermare i dati di un'impresa collegata tramite persone fisiche
+        function confermaImpresaPF(button) {
+            const item = button.closest('.pf-item');
+            const messageBox = item.querySelector('.message-box-pf');
+            const headerStatus = item.querySelector('.collapsible-header span:nth-child(2)');
+            
+            // Leggi i campi necessari
+            const nome = item.querySelector('.pf-name').value.trim();
+            const effettivi = parseFloat(item.querySelector('.pf-effettivi').value) || 0;
+            
+            // Verifica che i dati essenziali siano inseriti
+            if (nome === '') {
+                messageBox.innerHTML = '<div style="color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 4px;">È necessario inserire il nome dell\'impresa.</div>';
+                return;
+            }
+            
+            if (effettivi <= 0) {
+                messageBox.innerHTML = '<div style="color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 4px;">È necessario inserire un numero valido di effettivi (ULA).</div>';
+                return;
+            }
+            
+            // Se tutti i controlli sono passati, conferma l'impresa
+            item.setAttribute('data-confermata', 'true');
+            
+            // Aggiorna lo stato visivo
+            headerStatus.style.backgroundColor = '#28a745';
+            headerStatus.textContent = 'Confermata';
+            
+            // Disabilita i campi per prevenire modifiche accidentali
+            item.querySelectorAll('.pf-name, .pf-effettivi, .pf-fatturato, .pf-bilancio').forEach(input => {
+                input.setAttribute('readonly', 'true');
+                input.style.backgroundColor = '#e9ecef';
+            });
+            
+            // Modifica il pulsante per consentire la modifica
+            button.textContent = 'Modifica dati';
+            button.onclick = function() { sbloccaModificaPF(this); };
+            
+            // Messaggio di conferma
+            messageBox.innerHTML = '<div style="color: #155724; background-color: #d4edda; padding: 10px; border-radius: 4px;">Dati confermati con successo!</div>';
+            
+            // Aggiorna il riepilogo
+            updateSummary();
+        }
+
+        // Funzione per sbloccare la modifica dell'impresa collegata tramite persone fisiche
+        function sbloccaModificaPF(button) {
+            const item = button.closest('.pf-item');
+            const messageBox = item.querySelector('.message-box-pf');
+            const headerStatus = item.querySelector('.collapsible-header span:nth-child(2)');
+            
+            // Cambia lo stato
+            item.setAttribute('data-confermata', 'false');
+            
+            // Aggiorna lo stato visivo
+            headerStatus.style.backgroundColor = '#dc3545';
+            headerStatus.textContent = 'Non confermata';
+            
+            // Riabilita i campi
+            item.querySelectorAll('.pf-name, .pf-effettivi, .pf-fatturato, .pf-bilancio').forEach(input => {
+                input.removeAttribute('readonly');
+                input.style.backgroundColor = '';
+            });
+            
+            // Ripristina il pulsante di conferma
+            button.textContent = 'Conferma dati';
+            button.onclick = function() { confermaImpresaPF(this); };
+            
+            // Messaggio
+            messageBox.innerHTML = '<div style="color: #856404; background-color: #fff3cd; padding: 10px; border-radius: 4px;">Modifica dati abilitata. Ricordati di confermare dopo le modifiche.</div>';
+            
+            // Aggiorna il riepilogo
+            updateSummary();
+        }
+
+        // Funzione per rimuovere un'impresa non collegata
+        function rimuoviCollegamentoPF(button) {
+            const item = button.closest('.pf-item');
+            if (item && confirm('Sei sicuro di voler rimuovere questa impresa non collegata?')) {
+                item.remove();
+                updateSummary();
+            }
+        }
+        // Funzione per mostrare/nascondere le schede in base ai tipi di impresa selezionati
+        function toggleTabs() {
+            const hasAssociate = document.getElementById('tipo-associata').checked;
+            const hasCollegata = document.getElementById('tipo-collegata').checked;
+            const hasCollegataPF = document.getElementById('tipo-collegata-pf').checked;
+            
+            // Aggiorna visibilità dei pulsanti delle tab
+            document.getElementById('tab-associate-btn').style.display = hasAssociate ? 'block' : 'none';
+            document.getElementById('tab-collegate-btn').style.display = hasCollegata ? 'block' : 'none';
+            document.getElementById('tab-pf-btn').style.display = hasCollegataPF ? 'block' : 'none';
+            
+            // Aggiorna visibilità delle sezioni di riepilogo
+            document.getElementById('summary-associate-container').style.display = hasAssociate ? 'block' : 'none';
+            document.getElementById('summary-collegate-container').style.display = hasCollegata ? 'block' : 'none';
+            document.getElementById('summary-pf-container').style.display = hasCollegataPF ? 'block' : 'none';
+            
+            // Aggiorna il riepilogo
+            updateSummary();
+        }
+        
+        // Funzione per aggiornare il riepilogo e controllare se tutti i dati necessari sono stati inseriti
+        function updateSummary() {
+            let canCalculate = true;
+            
+            // Verifica dati principali
+            const nomeImpresa = document.getElementById('nome-impresa').value.trim();
+            const effettivi = parseFloat(document.getElementById('effettivi').value) || 0;
+            const fatturato = parseFloat(document.getElementById('fatturato').value) || 0;
+            const bilancio = parseFloat(document.getElementById('bilancio').value) || 0;
+            
+            if (nomeImpresa === '' || effettivi === 0) {
+                document.getElementById('status-main').textContent = 'Incompleto';
+                document.getElementById('status-main-icon').className = 'status-indicator status-incomplete';
+                canCalculate = false;
+            } else {
+                document.getElementById('status-main').textContent = 'Completo';
+                document.getElementById('status-main-icon').className = 'status-indicator status-complete';
+            }
+            
+            // Verifica imprese associate
+            if (document.getElementById('tipo-associata').checked) {
+                const associateItems = document.querySelectorAll('.associate-item');
+                
+                // Verificare se ci sono imprese associate
+                if (associateItems.length === 0) {
+                    document.getElementById('status-associate').textContent = 'Nessuna impresa inserita';
+                    document.getElementById('status-associate-icon').className = 'status-indicator status-incomplete';
+                    canCalculate = false;
+                } else {
+                    // Verificare se almeno un'impresa associata è confermata
+                    const confermate = Array.from(associateItems).filter(item => 
+                        item.getAttribute('data-confermata') === 'true'
+                    );
+                    
+                    if (confermate.length === 0) {
+                        document.getElementById('status-associate').textContent = 'Nessuna impresa confermata';
+                        document.getElementById('status-associate-icon').className = 'status-indicator status-incomplete';
+                        canCalculate = false;
+                    } else {
+                        document.getElementById('status-associate').textContent = `Complete (${confermate.length} confermate)`;
+                        document.getElementById('status-associate-icon').className = 'status-indicator status-complete';
+                    }
+                }
+            }
+            
+            // Verifica imprese collegate
+            if (document.getElementById('tipo-collegata').checked) {
+                const collegateItems = document.querySelectorAll('.collegata-item');
+                
+                // Verificare se ci sono imprese collegate
+                if (collegateItems.length === 0) {
+                    document.getElementById('status-collegate').textContent = 'Nessuna impresa inserita';
+                    document.getElementById('status-collegate-icon').className = 'status-indicator status-incomplete';
+                    canCalculate = false;
+                } else {
+                    // Verificare se almeno un'impresa collegata è confermata
+                    const confermate = Array.from(collegateItems).filter(item => 
+                        item.getAttribute('data-confermata') === 'true'
+                    );
+                    
+                    if (confermate.length === 0) {
+                        document.getElementById('status-collegate').textContent = 'Nessuna impresa confermata';
+                        document.getElementById('status-collegate-icon').className = 'status-indicator status-incomplete';
+                        canCalculate = false;
+                    } else {
+                        document.getElementById('status-collegate').textContent = `Complete (${confermate.length} confermate)`;
+                        document.getElementById('status-collegate-icon').className = 'status-indicator status-complete';
+                    }
+                }
+            }
+            // Verifica imprese collegate tramite persone fisiche
+            if (document.getElementById('tipo-collegata-pf').checked) {
+                const atecoImpresa = document.getElementById('pf-ateco').value.trim();
+                let hasPfData = false;
+                let hasValidCollegamento = false;
+                let allItemsVerified = true;
+                
+                if (atecoImpresa === '') {
+                    document.getElementById('status-pf').textContent = 'Codice ATECO impresa principale mancante';
+                    document.getElementById('status-pf-icon').className = 'status-indicator status-incomplete';
+                    canCalculate = false;
+                } else {
+                    const pfItems = document.querySelectorAll('.pf-item');
+                    
+                    // Se non ci sono imprese PF nel contenitore
+                    if (pfItems.length === 0) {
+                        document.getElementById('status-pf').textContent = 'Nessuna impresa inserita';
+                        document.getElementById('status-pf-icon').className = 'status-indicator status-incomplete';
+                        canCalculate = false;
+                    } else {
+                        // Verifica se tutte le imprese sono verificate
+                        let needsAtLeastOneConnection = true;
+                        let hasCollegate = false;
+                        let allConfirmed = true;
+                        
+                        pfItems.forEach(item => {
+                            const isVerified = item.querySelector('.pf-result').innerHTML !== '';
+                            if (!isVerified) {
+                                allItemsVerified = false;
+                            }
+                            
+                            // Se è collegata, verifica che sia confermata
+                            if (item.getAttribute('data-collegata') === 'true') {
+                                hasCollegate = true;
+                                if (item.getAttribute('data-confermata') !== 'true') {
+                                    allConfirmed = false;
+                                } else {
+                                    hasValidCollegamento = true;
+                                    const name = item.querySelector('.pf-name').value.trim();
+                                    const effettivi = parseFloat(item.querySelector('.pf-effettivi').value) || 0;
+                                    
+                                    if (name !== '' && effettivi > 0) {
+                                        hasPfData = true;
+                                    }
+                                }
+                            }
+                        });
+                        
+                        if (!allItemsVerified) {
+                            document.getElementById('status-pf').textContent = 'Alcune imprese non verificate';
+                            document.getElementById('status-pf-icon').className = 'status-indicator status-incomplete';
+                            canCalculate = false;
+                        } else if (hasCollegate && !allConfirmed) {
+                            document.getElementById('status-pf').textContent = 'Alcune imprese collegate non confermate';
+                            document.getElementById('status-pf-icon').className = 'status-indicator status-incomplete';
+                            canCalculate = false;
+                        } else if (hasCollegate && !hasPfData) {
+                            document.getElementById('status-pf').textContent = 'Dati delle imprese collegate incompleti';
+                            document.getElementById('status-pf-icon').className = 'status-indicator status-incomplete';
+                            canCalculate = false;
+                        } else {
+                            // Se tutte le imprese sono verificate e non ci sono imprese collegate o sono tutte confermate
+                            document.getElementById('status-pf').textContent = 'Completo';
+                            document.getElementById('status-pf-icon').className = 'status-indicator status-complete';
+                        }
+                    }
+                }
+            }
+            
+            // Abilita o disabilita il pulsante di calcolo in base allo stato dei dati
+            document.getElementById('btn-calcola').disabled = !canCalculate;
+        }
+        // Funzione per calcolare la dimensione dell'impresa
+        function calcolaDimensione() {
+            // Recupera i dati principali dell'impresa
+            const nomeImpresa = document.getElementById('nome-impresa').value.trim();
+            let effettivi = parseFloat(document.getElementById('effettivi').value) || 0;
+            let fatturato = parseFloat(document.getElementById('fatturato').value) || 0;
+            let bilancio = parseFloat(document.getElementById('bilancio').value) || 0;
+            
+            let dettagli = `Dati inseriti per l'impresa principale (${nomeImpresa}):\n`;
+            dettagli += `- Effettivi (ULA): ${effettivi}\n`;
+            dettagli += `- Fatturato: ${fatturato.toLocaleString('it-IT')} €\n`;
+            dettagli += `- Bilancio: ${bilancio.toLocaleString('it-IT')} €\n\n`;
+            
+            // Imprese associate
+            if (document.getElementById('tipo-associata').checked) {
+                dettagli += `Dati delle imprese associate:\n`;
+                const associateItems = document.querySelectorAll('.associate-item[data-confermata="true"]'); // Solo le confermate
+                associateItems.forEach((item, index) => {
+                    const nomeAssociata = item.querySelector('.associate-name').value.trim() || `Associata #${index + 1}`;
+                    const percentuale = parseFloat(item.querySelector('.associate-percentage').value) / 100 || 0;
+                    const associateEffettivi = parseFloat(item.querySelector('.associate-effettivi').value) || 0;
+                    const associateFatturato = parseFloat(item.querySelector('.associate-fatturato').value) || 0;
+                    const associateBilancio = parseFloat(item.querySelector('.associate-bilancio').value) || 0;
+                    
+                    dettagli += `${nomeAssociata}:\n`;
+                    dettagli += `- Percentuale: ${(percentuale * 100).toFixed(2)}%\n`;
+                    dettagli += `- Effettivi (ULA): ${associateEffettivi} (considerati: ${(associateEffettivi * percentuale).toFixed(2)})\n`;
+                    dettagli += `- Fatturato: ${associateFatturato.toLocaleString('it-IT')} € (considerato: ${(associateFatturato * percentuale).toLocaleString('it-IT')} €)\n`;
+                    dettagli += `- Bilancio: ${associateBilancio.toLocaleString('it-IT')} € (considerato: ${(associateBilancio * percentuale).toLocaleString('it-IT')} €)\n\n`;
+                    
+                    // Aggiungi i dati proporzionali
+                    effettivi += associateEffettivi * percentuale;
+                    fatturato += associateFatturato * percentuale;
+                    bilancio += associateBilancio * percentuale;
+                });
+            }
+            
+            // Imprese collegate
+            if (document.getElementById('tipo-collegata').checked) {
+                dettagli += `Dati delle imprese collegate:\n`;
+                const collegateItems = document.querySelectorAll('.collegata-item[data-confermata="true"]'); // Solo le confermate
+                collegateItems.forEach((item, index) => {
+                    const nomeCollegata = item.querySelector('.collegata-name').value.trim() || `Collegata #${index + 1}`;
+                    const collegateEffettivi = parseFloat(item.querySelector('.collegata-effettivi').value) || 0;
+                    const collegateFatturato = parseFloat(item.querySelector('.collegata-fatturato').value) || 0;
+                    const collegateBilancio = parseFloat(item.querySelector('.collegata-bilancio').value) || 0;
+                    
+                    dettagli += `${nomeCollegata}:\n`;
+                    dettagli += `- Effettivi (ULA): ${collegateEffettivi}\n`;
+                    dettagli += `- Fatturato: ${collegateFatturato.toLocaleString('it-IT')} €\n`;
+                    dettagli += `- Bilancio: ${collegateBilancio.toLocaleString('it-IT')} €\n\n`;
+                    
+                    // Aggiungi il 100% dei dati
+                    effettivi += collegateEffettivi;
+                    fatturato += collegateFatturato;
+                    bilancio += collegateBilancio;
+                });
+            }
+            
+            // Imprese collegate tramite persone fisiche
+            if (document.getElementById('tipo-collegata-pf').checked) {
+                dettagli += `Dati delle imprese collegate tramite persone fisiche:\n`;
+                const pfItems = document.querySelectorAll('.pf-item');
+                pfItems.forEach((item) => {
+                    // Considera solo le imprese etichettate come collegate
+                    if (item.getAttribute('data-collegata') === 'true' && item.getAttribute('data-confermata') === 'true') {
+                        const nomePf = item.querySelector('.pf-name').value.trim() || `Collegata tramite P.F.`;
+                        const pfEffettivi = parseFloat(item.querySelector('.pf-effettivi').value) || 0;
+                        const pfFatturato = parseFloat(item.querySelector('.pf-fatturato').value) || 0;
+                        const pfBilancio = parseFloat(item.querySelector('.pf-bilancio').value) || 0;
+                        const pfAteco = item.querySelector('.pf-ateco').value.trim();
+                        const pfPercentuale = parseFloat(item.querySelector('.pf-percentage').value) || 0;
+                        
+                        dettagli += `${nomePf}:\n`;
+                        dettagli += `- Codice ATECO: ${pfAteco}\n`;
+                        dettagli += `- Percentuale controllo persone fisiche: ${pfPercentuale}%\n`;
+                        dettagli += `- Effettivi (ULA): ${pfEffettivi}\n`;
+                        dettagli += `- Fatturato: ${pfFatturato.toLocaleString('it-IT')} €\n`;
+                        dettagli += `- Bilancio: ${pfBilancio.toLocaleString('it-IT')} €\n\n`;
+                        
+                        // Aggiungi il 100% dei dati
+                        effettivi += pfEffettivi;
+                        fatturato += pfFatturato;
+                        bilancio += pfBilancio;
+                    }
+                });
+            }
+            dettagli += `Totali calcolati:\n`;
+            dettagli += `- Effettivi totali (ULA): ${effettivi.toFixed(2)}\n`;
+            dettagli += `- Fatturato totale: ${fatturato.toLocaleString('it-IT')} €\n`;
+            dettagli += `- Bilancio totale: ${bilancio.toLocaleString('it-IT')} €\n\n`;
+            
+            // Determina la dimensione dell'impresa
+            let dimensione = '';
+            let resultClass = '';
+            
+            if (effettivi < 10 && (fatturato <= 2000000 || bilancio <= 2000000)) {
+                dimensione = 'Microimpresa';
+                resultClass = 'result-micro';
+                dettagli += `Classificazione: Microimpresa\n`;
+                dettagli += `(Effettivi < 10 e Fatturato o Bilancio ≤ 2 milioni €)`;
+            } else if (effettivi < 50 && (fatturato <= 10000000 || bilancio <= 10000000)) {
+                dimensione = 'Piccola Impresa';
+                resultClass = 'result-small';
+                dettagli += `Classificazione: Piccola Impresa\n`;
+                dettagli += `(Effettivi < 50 e Fatturato o Bilancio ≤ 10 milioni €)`;
+            } else if (effettivi < 250 && (fatturato <= 50000000 || bilancio <= 43000000)) {
+                dimensione = 'Media Impresa';
+                resultClass = 'result-medium';
+                dettagli += `Classificazione: Media Impresa\n`;
+                dettagli += `(Effettivi < 250 e Fatturato ≤ 50 milioni € o Bilancio ≤ 43 milioni €)`;
+            } else {
+                dimensione = 'Grande Impresa';
+                resultClass = 'result-large';
+                dettagli += `Classificazione: Grande Impresa\n`;
+                dettagli += `(Non rientra nei parametri PMI)`;
+            }
+            
+            // Visualizza il risultato
+            const resultElement = document.getElementById('result');
+            resultElement.className = `result ${resultClass}`;
+            resultElement.style.display = 'block';
+            
+            document.getElementById('result-text').textContent = `L'impresa è classificata come: ${dimensione}`;
+            document.getElementById('result-details-text').innerHTML = dettagli.replace(/\n/g, '<br>');
+            
+            // Scorrere alla sezione dei risultati
+            resultElement.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Funzione per resettare completamente l'applicazione
+        function resetApplication() {
+            if (!confirm('Sei sicuro di voler resettare completamente l\'applicazione? Tutti i dati inseriti saranno persi.')) {
+                return;
+            }
+            
+            // Reset del wizard
+            resetWizard();
+            
+            // Reset dei dati principali
+            document.getElementById('nome-impresa').value = '';
+            document.getElementById('effettivi').value = '';
+            document.getElementById('fatturato').value = '';
+            document.getElementById('bilancio').value = '';
+            
+            // Reset dei tipi di impresa
+            document.getElementById('tipo-associata').checked = false;
+            document.getElementById('tipo-collegata').checked = false;
+            document.getElementById('tipo-collegata-pf').checked = false;
+            
+            // Reset dei contenitori imprese associate
+            document.getElementById('associate-container').innerHTML = `
+                <div class="associate-item" data-confermata="false">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <span>Impresa Associata #1</span>
+                        <span style="margin-left: auto; margin-right: 10px; font-size: 12px; padding: 2px 6px; background-color: #dc3545; color: white; border-radius: 4px;">Non confermata</span>
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content collapsed">
+                        <div class="form-group">
+                            <label>Nome dell'impresa:</label>
+                            <input type="text" class="associate-name" placeholder="Inserisci il nome dell'impresa">
+                        </div>
+                        <div class="form-group">
+                            <label>Percentuale di partecipazione (%):</label>
+                            <input type="number" class="associate-percentage" min="25" max="50" value="25" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Numero di effettivi (ULA):</label>
+                            <input type="number" class="associate-effettivi" min="0" step="1" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Fatturato annuo (Euro):</label>
+                            <input type="number" class="associate-fatturato" min="0" step="1000" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Totale di bilancio annuo (Euro):</label>
+                            <input type="number" class="associate-bilancio" min="0" step="1000" value="0">
+                        </div>
+                        <div class="button-container">
+                            <button class="wizard-btn" onclick="confermaImpresa(this, 'associate')">Conferma dati</button>
+                            <button class="delete-btn" onclick="eliminaImpresa(this, 'associate')">Elimina questa impresa</button>
+                        </div>
+                        <div class="message-box" style="margin-top: 10px;"></div>
+                    </div>
+                </div>
+            `;
+            associateCounter = 1;
+            
+            // Reset dei contenitori imprese collegate
+            document.getElementById('collegate-container').innerHTML = `
+                <div class="collegata-item" data-confermata="false">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <span>Impresa Collegata #1</span>
+                        <span style="margin-left: auto; margin-right: 10px; font-size: 12px; padding: 2px 6px; background-color: #dc3545; color: white; border-radius: 4px;">Non confermata</span>
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content collapsed">
+                        <div class="form-group">
+                            <label>Nome dell'impresa:</label>
+                            <input type="text" class="collegata-name" placeholder="Inserisci il nome dell'impresa">
+                        </div>
+                        <div class="form-group">
+                            <label>Numero di effettivi (ULA):</label>
+                            <input type="number" class="collegata-effettivi" min="0" step="1" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Fatturato annuo (Euro):</label>
+                            <input type="number" class="collegata-fatturato" min="0" step="1000" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Totale di bilancio annuo (Euro):</label>
+                            <input type="number" class="collegata-bilancio" min="0" step="1000" value="0">
+                        </div>
+                        <div class="button-container">
+                            <button class="wizard-btn" onclick="confermaImpresa(this, 'collegata')">Conferma dati</button>
+                            <button class="delete-btn" onclick="eliminaImpresa(this, 'collegata')">Elimina questa impresa</button>
+                        </div>
+                        <div class="message-box" style="margin-top: 10px;"></div>
+                    </div>
+                </div>
+            `;
+            collegateCounter = 1;
+            
+            // Reset dei contenitori imprese collegate tramite persone fisiche
+            document.getElementById('pf-ateco').value = '';
+            document.getElementById('pf-container').innerHTML = `
+                <div class="pf-item">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <span>Impresa collegata tramite persone fisiche #1</span>
+                        <span style="margin-left: auto; margin-right: 10px; font-size: 12px; padding: 2px 6px; background-color: #dc3545; color: white; border-radius: 4px; display: none;">Stato</span>
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content collapsed">
+                        <div class="form-group">
+                            <label>Nome dell'impresa:</label>
+                            <input type="text" class="pf-name" placeholder="Inserisci il nome dell'impresa">
+                        </div>
+                        <div class="form-group">
+                            <label>Codice ATECO (prime due cifre):</label>
+                            <input type="text" class="pf-ateco" placeholder="Es. 28.07">
+                        </div>
+                        <div class="form-group">
+                            <label>Percentuale controllata dalle stesse persone fisiche (%):</label>
+                            <input type="number" class="pf-percentage" min="50" max="100" value="50" step="1">
+                            <div class="help-text">Percentuale di partecipazione detenuta congiuntamente dalle stesse persone fisiche in entrambe le imprese</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Fatturazione reciproca (% del fatturato):</label>
+                            <input type="number" class="pf-fatturazione" min="0" max="100" value="0" step="1">
+                            <div class="help-text">Percentuale del fatturato totale che questa impresa fattura alla tua o viceversa</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Numero di effettivi (ULA):</label>
+                            <input type="number" class="pf-effettivi" min="0" step="1" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Fatturato annuo (Euro):</label>
+                            <input type="number" class="pf-fatturato" min="0" step="1000" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Totale di bilancio annuo (Euro):</label>
+                            <input type="number" class="pf-bilancio" min="0" step="1000" value="0">
+                        </div>
+                        <div class="form-group">
+                            <button class="wizard-btn" onclick="verificaCollegamentoPF(this)">Verifica collegamento</button>
+                            <div class="pf-result"></div>
+                        </div>
+                        <div class="button-container">
+                            <button class="wizard-btn" id="conferma-pf-btn" onclick="confermaImpresaPF(this)" style="display: none;">Conferma dati</button>
+                            <button class="delete-btn" onclick="eliminaImpresa(this, 'pf')">Elimina questa impresa</button>
+                        </div>
+                        <div class="message-box-pf" style="margin-top: 10px;"></div>
+                    </div>
+                </div>
+            `;
+            pfCounter = 1;
+            
+            // Nascondi il risultato
+            document.getElementById('result').style.display = 'none';
+            
+            // Aggiorna le tab visibili
+            toggleTabs();
+            
+            // Aggiorna il riepilogo
+            updateSummary();
+            
+            // Torna alla scheda guidata
+            showTab('tab-wizard');
+        }
+        
+        // Funzioni di inizializzazione
+        function initApp() {
+            // Aggiungi event listener per aggiornare il riepilogo quando si modificano i campi
+            document.getElementById('nome-impresa').addEventListener('input', updateSummary);
+            document.getElementById('effettivi').addEventListener('input', updateSummary);
+            document.getElementById('fatturato').addEventListener('input', updateSummary);
+            document.getElementById('bilancio').addEventListener('input', updateSummary);
+            
+            // Imposta lo stato iniziale delle tab
+            toggleTabs();
+            
+            // Assicurati che il wizard sia visibile all'inizio
+            showTab('tab-wizard');
+        }
+        
+        // Inizializza l'app quando il documento è caricato
+        window.onload = initApp;
+    </script>
+    <footer class="app-footer">
+        <div class="footer-container">
+            <div class="version-info">
+                <span class="release-label">Version:</span> <span class="release-number">1.1.0</span>
+                <!-- Puoi aggiungere qui anche una data di rilascio se necessario -->
+                <span class="release-date">12/05/2025</span>
+            </div>
+            <div class="copyright-info">
+                &copy; 2025 Francesco Virecci Fana. All rights reserved.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
